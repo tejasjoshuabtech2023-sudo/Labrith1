@@ -111,7 +111,6 @@ class Sandbox:
                     shutil.copytree(src, dest)
                 except Exception:
                     pass
-                    pass
 
     # -----------------------------------------------------------------------
     # Path isolation guards

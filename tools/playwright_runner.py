@@ -116,6 +116,7 @@ def stop_process_tree(proc: subprocess.Popen) -> None:
                 ["taskkill", "/F", "/T", "/PID", str(pid)],
                 capture_output=True,
                 check=False,
+                timeout=5,
             )
         except Exception:
             pass
