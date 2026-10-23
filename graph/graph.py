@@ -171,7 +171,9 @@ def run_graph(
 
     gates = evaluate_gates(final_state)
     if final_state.status not in ("accepted", "partial", "failed"):
-        final_state.status = "accepted" if all_gates_passed(gates) else "partial"
+        final_state = final_state.model_copy(
+            update={"status": "accepted" if all_gates_passed(gates) else "partial"}
+        )
 
     run_id = getattr(trace_writer, "run_id", "run-default") if trace_writer else "run-default"
     report = generate_quality_report(final_state, run_id=run_id)
