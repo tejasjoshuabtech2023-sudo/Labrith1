@@ -169,6 +169,15 @@ def run_qa(
         if not required_flows:
             required_flows = ["Main Flow"]
 
+    # Deduplicate required_flows while preserving order
+    seen_flows: set[str] = set()
+    deduped_flows: list[str] = []
+    for f in required_flows:
+        if f not in seen_flows:
+            seen_flows.add(f)
+            deduped_flows.append(f)
+    required_flows = deduped_flows
+
     # Fast path for simulated force_failure in unit routing tests
     if force_failure:
         return _simulate_forced_failure(state, task_id, task_artifact_dir, trace_writer)
