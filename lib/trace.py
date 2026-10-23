@@ -102,11 +102,17 @@ def read_trace(trace_path: Path) -> list[TraceEntry]:
     if not path.exists():
         return entries
     with open(path, "r", encoding="utf-8") as f:
-        for line in f:
+        for lineno, line in enumerate(f, start=1):
             line = line.strip()
             if not line:
                 continue
-            entries.append(TraceEntry.model_validate_json(line))
+            try:
+                entries.append(TraceEntry.model_validate_json(line))
+            except Exception as exc:
+                import logging
+                logging.getLogger("frontforge.trace").warning(
+                    "Skipping malformed trace line %d in %s: %s", lineno, path, exc
+                )
     return entries
 
 
