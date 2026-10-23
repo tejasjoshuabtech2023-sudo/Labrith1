@@ -217,6 +217,13 @@ def load_openapi_spec(spec_or_url: Union[str, dict[str, Any], Path]) -> dict[str
             try:
                 response = httpx.get(spec_or_url, timeout=10.0, follow_redirects=True)
                 response.raise_for_status()
+                content_type = response.headers.get("content-type", "")
+                if "yaml" in content_type or spec_or_url.endswith((".yaml", ".yml")):
+                    try:
+                        import yaml
+                        return yaml.safe_load(response.text)
+                    except Exception:
+                        pass
                 return response.json()
             except Exception as exc:
                 logger.warning(
